@@ -11,6 +11,7 @@ from models.state import State
 from models.city import City
 from models.base_model import Base
 
+
 class DBStorage:
     """
     Create SQLalchemy database
@@ -45,9 +46,10 @@ class DBStorage:
             for key, value in models.classes.items():
                 if key != "BaseModel":
                     objs = self.__session.query(value).all()
-                    if len(objs >0):
+                    if len(objs > 0):
                         for obj in objs:
-                            key = "{}.{}".format(obj.__class__.__name__, obj.id)
+                            key = "{}.{}".format(obj.__class__.__name__,
+                                                 obj.id)
                             dict_db[key] = obj
             return dict_db
 
@@ -66,7 +68,8 @@ class DBStorage:
 
     def reload(self):
         """Commit all changes of current database session"""
-        self.__session = Base.metadata.create_all(engine)
-        session_factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
+        self.__session = Base.metadata.create_all(self.__engine)
+        session_factory = sessionmaker(bind=self.__engine,
+                                       expire_on_commit=False)
         Session = scoped_session(session_factory)
         self.__session = Session()
